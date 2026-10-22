@@ -27,9 +27,9 @@ Other entry points:
 | `swift test` | All unit and integration tests (Geometry, Calc, Domain, IFC, CAD, Output, Persistence) |
 | `swift run -c release arcus-bench [--quick] [--out file.json]` | Engine benchmarks on the generated fixtures (see [Docs/Performance.md](Docs/Performance.md)) |
 | `script/qa_capture.sh all <dir>` | Scripted end-to-end QA workflow plus light/dark screenshots at minimum and spacious window sizes |
-| `script/release_local.sh patch\|minor\|major` | Bumps `VERSION`/`BUILD_NUMBER`, writes release notes and builds and verifies the release. Local only: no signing identity, notarization or upload |
+| `script/release_local.sh patch\|minor\|major` | Bumps `VERSION`/`BUILD_NUMBER`, writes release notes and builds and verifies the release. Local only: development signing, no Developer ID, notarization or upload |
 
-The app bundle lands at `build/Arcus.app`. It is signed ad hoc, which is enough to run it locally.
+The app bundle lands at `build/Arcus.app`. It is signed with the Apple Development certificate of team 7K32QQ2FX8 (`SIGN_IDENTITY` overrides it; ad hoc when the certificate is missing), so it keeps one code identity across builds.
 
 ## What you can do
 

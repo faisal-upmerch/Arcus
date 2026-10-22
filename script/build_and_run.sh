@@ -82,7 +82,11 @@ mkdir -p "$STAGE/$APP_NAME.app/Contents/Resources/Docs"
 cp "$ROOT"/Docs/*.md "$STAGE/$APP_NAME.app/Contents/Resources/Docs/" 2>/dev/null || true
 cp "$ROOT/THIRD_PARTY_NOTICES.md" "$STAGE/$APP_NAME.app/Contents/Resources/" 2>/dev/null || true
 printf 'APPL????' > "$STAGE/$APP_NAME.app/Contents/PkgInfo"
-codesign --force --sign - --timestamp=none "$STAGE/$APP_NAME.app" >/dev/null
+# Signed with the Apple Development certificate of team 7K32QQ2FX8 so the app keeps one code identity across
+# builds (macOS keys privacy permissions to it). SIGN_IDENTITY overrides it; ad hoc when the certificate is missing.
+SIGN_IDENTITY="${SIGN_IDENTITY:-$(security find-identity -v -p codesigning 2>/dev/null | sed -n 's/.*"\(Apple Development: Abu Mohammad Faisal ([^"]*)\)".*/\1/p' | head -n1)}"
+[[ -n "$SIGN_IDENTITY" ]] || echo "warning: no Apple Development certificate for team 7K32QQ2FX8; signing ad hoc" >&2
+codesign --force --sign "${SIGN_IDENTITY:--}" --timestamp=none "$STAGE/$APP_NAME.app" >/dev/null
 rm -rf "$APP"
 mv "$STAGE/$APP_NAME.app" "$APP"
 rm -rf "$STAGE"
